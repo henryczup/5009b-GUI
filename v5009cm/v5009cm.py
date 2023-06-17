@@ -53,7 +53,7 @@ class MainWindow(tk.Tk):
 
         MainWindow.sp = VSerialPort.VSerialPort(port)
         if MainWindow.sp.isOpen():
-            MainWindow.sp.writeline("status")
+            MainWindow.sp.writeLine("status")
             MainWindow.sp.readAll()
 
         MainWindow.menuBar = Menu.VMenu(self)
@@ -87,7 +87,7 @@ class MainWindow(tk.Tk):
             cmd = '{0} {1}'.format(command, value)
         else:
             cmd = 'source {0}; {1} {2}'.format(source, command, value)
-        MainWindow.sp.writeline(cmd)
+        MainWindow.sp.writeLine(cmd)
 
         MainWindow.sp.readAll()
         MainWindow.sp.lineGet()       # Throw away the echo of the command
@@ -107,7 +107,7 @@ class MainWindow(tk.Tk):
         self.sourceIndex = 99997
 
         # Fetch the synthesizer's register values
-        MainWindow.sp.writeline("DALL")
+        MainWindow.sp.writeLine("DALL")
         MainWindow.sp.readAll()
 
         # Parse the register values and store them into our widgets

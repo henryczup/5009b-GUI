@@ -34,7 +34,7 @@ class VSerialPort(serial.Serial):
         else:
             raise RuntimeError("Cannot communicate with 5009")
 
-    def writeline(self, line):
+    def writeLine(self, line):
         print(line)
         self.write(bytearray(line, encoding=self._ENCODING) + self._EOL)
 
