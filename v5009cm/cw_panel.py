@@ -8,7 +8,6 @@
 #   Reference Frequency SpinBox
 
 import tkinter as tk
-# import ttk
 from functools import partial
 
 class CwPanel( tk.Frame ):
@@ -25,7 +24,7 @@ class CwPanel( tk.Frame ):
     # ----- Constructor -----
     def __init__( self, parent ):
         # Call the base constructor
-        tk.Frame.__init__( self, parent )
+        super().__init__(parent)
 
         self.parent = parent    # parent = root
         
@@ -358,7 +357,6 @@ class CwPanel( tk.Frame ):
 
         nextCol = 0
         nextRow += 1
-        # end of CwPanel constructor
 
     def OptionMenuEH( self, widget, *args ):
         

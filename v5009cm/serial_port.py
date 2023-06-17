@@ -7,7 +7,7 @@ class VSerialPort(serial.Serial):
 
     def __init__(self):
         # Call the base constructor
-        serial.Serial.__init__(self)
+        super().__init__()
 
         self.portLines = []
         self.portLineCount = 0

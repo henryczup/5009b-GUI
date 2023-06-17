@@ -31,8 +31,6 @@ import v5009cm.serial_port as VSerialPort
 import v5009cm.menu as Menu
 import v5009cm.cw_panel as CwPanel
 
-# Create a class that is derived from Tk
-
 
 class MainWindow(tk.Tk):
     # Class data
@@ -40,10 +38,9 @@ class MainWindow(tk.Tk):
     menuBar = None
     cwPanel = None
 
-    # ----- Constructor -----
     def __init__(self):
         # Call the base constructor
-        tk.Tk.__init__(self)
+        super().__init__()
 
         self.title('V5009CM')
         self.bg = 'ivory'
@@ -77,8 +74,6 @@ class MainWindow(tk.Tk):
         self.geometry(self.geometry())
 
         MainWindow.cwPanel.freqBox[0].focus_set()
-
-        #   End of Main Window Constructor
 
     def sendCommand(self, widget):
         if (self.suppressCommands):
@@ -182,8 +177,6 @@ class MainWindow(tk.Tk):
         else:
             pass
 
-    #   End of Main Window Class
-
 
 def main():
     # instantiate our mainProgram class
@@ -193,6 +186,5 @@ def main():
     app.mainloop()
 
 
-# ----- main -----
 if __name__ == "__main__":
     main()

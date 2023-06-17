@@ -6,15 +6,13 @@
 
 import tkinter as tk
 import tkinter.messagebox
-# from functools import partial
-# import sys
 
 
 class VMenu(tk.Menu):
 
     # ----- Constructor -----
     def __init__(self, parent):
-        tk.Menu.__init__(self, parent)
+        super().__init__(parent)
         self.parent = parent
 
         self.fileMenu = None
