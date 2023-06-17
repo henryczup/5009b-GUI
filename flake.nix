@@ -33,6 +33,7 @@
             (python3.withPackages (ps: [
               v5009cm
               ps.autopep8
+              ps.flake8
             ]))
           ]);
         };
