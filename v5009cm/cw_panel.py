@@ -7,7 +7,7 @@
 #   Reference Source selector
 #   Reference Frequency SpinBox
 
-import Tkinter as tk
+import tkinter as tk
 # import ttk
 from functools import partial
 
