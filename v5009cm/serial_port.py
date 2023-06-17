@@ -1,3 +1,5 @@
+import collections
+
 import serial
 
 
@@ -12,9 +14,7 @@ class VSerialPort(serial.Serial):
         super().__init__(port, timeout=1.0)
         print(f"Using port {port}")
 
-        self.portLines = []
-        self.portLineCount = 0
-        self.portLineIndex = 0
+        self._line_buffer = collections.deque()
 
         for baudrate in self._BAUDRATES:
             # Try to open port with current settings
@@ -26,9 +26,10 @@ class VSerialPort(serial.Serial):
             self.write(self._EOL)
             self.readAll()
 
-            if self.portLines:
+            if self._line_buffer:
+                # Data was received
                 print(f"Using baudrate {baudrate}")
-                break  # Data was received
+                break
 
         else:
             raise RuntimeError("Cannot communicate with 5009")
@@ -38,23 +39,16 @@ class VSerialPort(serial.Serial):
         self.write(bytearray(line, encoding=self._ENCODING) + self._EOL)
 
     def readAll(self):
-        # Prepare the array to hold the incoming lines of text
-        self.portLines.clear()
-        self.portLineCount = self.portLineIndex = 0
+        self._line_buffer.clear()
 
         while line := self.readline().decode(encoding=self._ENCODING):
             print(line)
-            self.portLines.append(line)
-            self.portLineCount += 1
+            self._line_buffer.append(line)
 
-            # Stop reading when we get a prompt
             if len(line) == 5 and line[-1] == '>':
+                # Stop reading when we get a prompt
                 break
 
     def lineGet(self):
         """Read from the array of previously-received lines of text."""
-        i = self.portLineIndex
-        self.portLineIndex += 1
-        if self.portLineIndex > self.portLineCount:
-            return ''
-        return self.portLines[i]
+        return self._line_buffer.popleft() if self._line_buffer else ''
