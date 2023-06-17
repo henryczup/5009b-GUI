@@ -1,4 +1,3 @@
-import sys
 import serial
 import serial.tools.list_ports
 
@@ -23,9 +22,9 @@ class VSerialPort(serial.Serial):
             elif "Valon" in desc:
                 portList.append(port)
 
-        if (len(portList) == 0):
+        if not portList:
             print("No FTDI com ports are available")
-            return
+            exit(1)
 
         self.baudrate = 9600
         self.timeout = 1.0
@@ -34,22 +33,18 @@ class VSerialPort(serial.Serial):
 
         self.write(b'\r')
         self.readAll()
-        if (len(self.portLines) == 0):
+        if not self.portLines:
             self.baudrate = 115200
             self.write(b'\r')
             self.readAll()
-            if (len(self.portLines) == 0):
+            if not self.portLines:
                 print("Can't communicate with 5009")
-                # exit()
+                exit(1)
 
-        print(("Using " + self.port))
-
-        # ----- End of Constructor -----
+        print("Using " + self.port)
 
     def writeline(self, text):
         print(text)
-        if (not self.isOpen()):
-            return
         self.write(bytearray(text, encoding="ascii") + b'\r')
 
     def readAll(self):
@@ -57,22 +52,18 @@ class VSerialPort(serial.Serial):
         self.portLines = []
         self.portLineCount = self.portLineIndex = 0
 
-        if (not self.isOpen()):
-            return
-
         text = self.readline().decode()
-        while (1):
-            if (text == ""):
+        while True:
+            if not text:
                 return
-            sys.stdout.write(text)
+            print(text)
 
             self.portLines.append(text)
             self.portLineCount += 1
 
             # Stop reading when we get a prompt
-            if (len(text) == 5):
+            if len(text) == 5:
                 if text[4] == '>':
-                    sys.stdout.flush()
                     return
 
             text = self.readline().decode()
@@ -81,6 +72,6 @@ class VSerialPort(serial.Serial):
     def lineGet(self):
         i = self.portLineIndex
         self.portLineIndex += 1
-        if (self.portLineIndex > self.portLineCount):
+        if self.portLineIndex > self.portLineCount:
             return ''
         return self.portLines[i]
