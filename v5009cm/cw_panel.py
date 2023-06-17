@@ -365,7 +365,7 @@ class CwPanel(tk.Frame):
         # Widgets for commands that take an index will store text
         # in widget.Text, with the index in Widget.Value
         # Here, we turn text into an index, for commands that need one.
-        if ((widget.Text != None) and (widget.TextValues != None)):
+        if ((widget.Text is not None) and (widget.TextValues is not None)):
             text = widget.Text.get()
             widget.Value.set(widget.TextValues.index(text))
         self.sendCommand(widget)
