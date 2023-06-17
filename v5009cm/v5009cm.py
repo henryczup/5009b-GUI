@@ -25,6 +25,8 @@
 #       reinstantiated as instance data.
 # 1.00  Converted to Python 3 and packaged into `v5009cm` with entry point `v5009cm`.
 
+import argparse
+
 import tkinter as tk
 
 import v5009cm.serial_port as VSerialPort
@@ -38,7 +40,7 @@ class MainWindow(tk.Tk):
     menuBar = None
     cwPanel = None
 
-    def __init__(self):
+    def __init__(self, port):
         # Call the base constructor
         super().__init__()
 
@@ -49,7 +51,7 @@ class MainWindow(tk.Tk):
         self.sourceIndex = 99999     # set in parseQueryLines() to 0 or 1
         self.suppressCommands = False
 
-        MainWindow.sp = VSerialPort.VSerialPort()
+        MainWindow.sp = VSerialPort.VSerialPort(port)
         if MainWindow.sp.isOpen():
             MainWindow.sp.writeline("status")
             MainWindow.sp.readAll()
@@ -179,8 +181,13 @@ class MainWindow(tk.Tk):
 
 
 def main():
+    # Parse arguments
+    parser = argparse.ArgumentParser()
+    parser.add_argument("port", type=str, help="serial port of the device")
+    args = parser.parse_args()
+
     # instantiate our mainProgram class
-    app = MainWindow()
+    app = MainWindow(args.port)
 
     # Wait for events
     app.mainloop()

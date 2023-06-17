@@ -1,47 +1,33 @@
 import serial
-import serial.tools.list_ports
 
 
 class VSerialPort(serial.Serial):
 
-    def __init__(self):
+    def __init__(self, port):
         # Call the base constructor
-        super().__init__()
+        super().__init__(port, timeout=1.0)
+        print(f"Using port {port}")
 
         self.portLines = []
         self.portLineCount = 0
         self.portLineIndex = 0
 
-        portList = []
-        for port, desc, hwid in serial.tools.list_ports.comports():
-            print(('Port: ', port, ' Desc: ', desc, ' HwId: ', hwid))
-            if (hwid.find("FTDI") != -1):       # on Windows PC
-                portList.append(port)
-            elif (desc.find("Future") != -1):   # on Raspberry Pi
-                portList.append(port)
-            elif "Valon" in desc:
-                portList.append(port)
+        for baudrate in [9600, 115200]:
+            # Try to open port with current settings
+            self.baudrate = baudrate
+            self.close()  # Close port, just in case (does nothing if port is not open)
+            self.open()
 
-        if not portList:
-            print("No FTDI com ports are available")
-            exit(1)
-
-        self.baudrate = 9600
-        self.timeout = 1.0
-        self.port = portList[0]
-        self.open()
-
-        self.write(b'\r')
-        self.readAll()
-        if not self.portLines:
-            self.baudrate = 115200
+            # Check if the device responds
             self.write(b'\r')
             self.readAll()
-            if not self.portLines:
-                print("Can't communicate with 5009")
-                exit(1)
 
-        print("Using " + self.port)
+            if self.portLines:
+                print(f"Using baudrate {baudrate}")
+                break  # Data was received
+
+        else:
+            raise RuntimeError("Cannot communicate with 5009")
 
     def writeline(self, text):
         print(text)
