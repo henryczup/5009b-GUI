@@ -192,6 +192,9 @@ def main():
     # Wait for events
     app.mainloop()
 
+    # Exit
+    print()
+
 
 if __name__ == "__main__":
     main()

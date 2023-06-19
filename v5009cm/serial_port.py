@@ -28,7 +28,7 @@ class VSerialPort(serial.Serial):
 
             if self._line_buffer:
                 # Data was received
-                print(f"Using baudrate {baudrate}")
+                print(f"\nUsing baudrate {baudrate}")
                 break
 
         else:
@@ -42,7 +42,7 @@ class VSerialPort(serial.Serial):
         self._line_buffer.clear()
 
         while line := self.readline().decode(encoding=self._ENCODING):
-            print(line)
+            print(line, end="")
             self._line_buffer.append(line)
 
             if len(line) == 5 and line[-1] == '>':
