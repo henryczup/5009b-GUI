@@ -224,6 +224,24 @@ class CwPanel(tk.Frame):
         nextCol = 0
         nextRow += 1
 
+        # ----- Offset Slider -----
+        temp = tk.Label(self, text="Offset")
+        temp.grid(column=0, row=nextRow, sticky='EW')
+        temp['bg'] = 'ivory'
+        default_offset = self.freqBox[1].Value.get() - self.freqBox[0].Value.get()
+        # slider range is -1000 to 1000, incremented by 1
+        self.offsetSlider = tk.Scale(self, from_=-1000, to=1000, resolution=1, orient=tk.HORIZONTAL)
+        self.offsetSlider.set(default_offset)
+        self.offsetSlider.grid(column=1, row=nextRow, columnspan=2, sticky='EW')
+        self.offsetSlider['bg'] = 'ivory'
+        self.offsetLabel = tk.Label(self, text=f"{default_offset}")
+        self.offsetLabel.grid(column=3, row=nextRow, sticky='EW')
+        self.offsetLabel['bg'] = 'ivory'
+        self.offsetSlider.bind("<ButtonRelease-1>", lambda event: self.update_offset_with_snap(self.offsetSlider.get()))
+
+        nextCol = 0
+        nextRow += 1
+
         # ----- PDN Buttons -----
         temp = tk.Label(self, text="Power")
         temp.grid(column=nextCol, row=nextRow, sticky='EW')
@@ -382,3 +400,20 @@ class CwPanel(tk.Frame):
         btn.Text.set(['Off', 'On'][value])
         btn['bg'] = ['mistyrose', 'pale green'][value]
         self.sendCommand(btn)
+
+    def update_offset(self, value):
+        offset = float(value)
+        self.offsetLabel.config(text=f"{offset}")
+        new_freq = self.freqBox[0].Value.get() + offset
+        self.freqBox[1].Value.set(new_freq)
+        self.sendCommand(self.freqBox[1])
+
+    def update_offset_with_snap(self, value):
+        offset = float(value)
+        if abs(offset) < 2.0:
+            offset = 0.0
+            self.offsetSlider.set(offset)
+        self.offsetLabel.config(text=f"{offset:.1f} ")
+        new_freq = self.freqBox[0].Value.get() + offset
+        self.freqBox[1].Value.set(new_freq)
+        self.sendCommand(self.freqBox[1])
